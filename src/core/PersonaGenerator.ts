@@ -9,7 +9,7 @@ export class PersonaGenerator {
   ) {}
 
   public async generate(request: GenerationRequest): Promise<Persona[]> {
-    const coordinates = this.sampler.sample(request.axes, request.count);
+    const coordinates = this.sampler.sample(request.axes, request.count, request.context.seed);
 
     return Promise.all(
       coordinates.map((point, index) =>
