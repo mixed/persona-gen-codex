@@ -3,9 +3,11 @@ import type { AxisCoordinate, DiversityAxis } from '../types';
 const DEFAULT_BASES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 
 export class HaltonSampler {
-  public sample(axes: DiversityAxis[], count: number): AxisCoordinate[] {
+  public sample(axes: DiversityAxis[], count: number, seed?: number): AxisCoordinate[] {
+    const offset = this.normalizeSeed(seed);
+
     return Array.from({ length: count }, (_, i) => {
-      const index = i + 1;
+      const index = i + 1 + offset;
       const coordinates: AxisCoordinate = {};
 
       axes.forEach((axis, axisIndex) => {
@@ -15,6 +17,14 @@ export class HaltonSampler {
 
       return coordinates;
     });
+  }
+
+  private normalizeSeed(seed?: number): number {
+    if (!Number.isFinite(seed)) {
+      return 0;
+    }
+
+    return Math.max(0, Math.trunc(seed));
   }
 
   private halton(index: number, base: number): number {

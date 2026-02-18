@@ -17,4 +17,24 @@ describe('HaltonSampler', () => {
       { x: 0.75, y: 1 / 9 },
     ]);
   });
+
+  it('returns the same samples for the same seed', () => {
+    const sampler = new HaltonSampler();
+    const axes = [
+      { key: 'x', label: 'X' },
+      { key: 'y', label: 'Y' },
+    ];
+
+    expect(sampler.sample(axes, 4, 7)).toEqual(sampler.sample(axes, 4, 7));
+  });
+
+  it('returns different samples for different seeds', () => {
+    const sampler = new HaltonSampler();
+    const axes = [
+      { key: 'x', label: 'X' },
+      { key: 'y', label: 'Y' },
+    ];
+
+    expect(sampler.sample(axes, 4, 1)).not.toEqual(sampler.sample(axes, 4, 2));
+  });
 });
