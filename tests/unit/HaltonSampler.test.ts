@@ -17,4 +17,33 @@ describe('HaltonSampler', () => {
       { x: 0.75, y: 1 / 9 },
     ]);
   });
+
+  it('does not reuse bases when axes exceed 10', () => {
+    const sampler = new HaltonSampler();
+    const axes = Array.from({ length: 12 }, (_, i) => ({
+      key: `axis${i}`,
+      label: `Axis ${i}`,
+    }));
+
+    const [point] = sampler.sample(axes, 1);
+    const values = Object.values(point);
+
+    expect(new Set(values).size).toBe(values.length);
+    expect(point.axis10).toBe(1 / 31);
+    expect(point.axis11).toBe(1 / 37);
+  });
+
+  it('keeps extended axis-base mapping stable across repeated sampling', () => {
+    const sampler = new HaltonSampler();
+    const axes = Array.from({ length: 12 }, (_, i) => ({
+      key: `axis${i}`,
+      label: `Axis ${i}`,
+    }));
+
+    const [firstPoint] = sampler.sample(axes, 1);
+    const [secondPoint] = sampler.sample(axes, 1);
+
+    expect(secondPoint.axis10).toBe(firstPoint.axis10);
+    expect(secondPoint.axis11).toBe(firstPoint.axis11);
+  });
 });
